@@ -26,7 +26,6 @@ Para exercitar os conceitos apresentados nas matérias do curso, sendo elas sobr
 
 - **[Typescript](https://www.typescriptlang.org)**
 - **[NestJS](https://nestjs.com/)**
-- **[PostgreSQL](https://www.postgresql.org/)**
 - **[JestJS](https://jestjs.io/pt-BR/)**
 
 ## :rocket: Como rodar esse projeto
@@ -48,8 +47,10 @@ docker compose up
 O projeto estará executando no endereço http://localhost:3000/.
 
 Para limpar o volume db do docker, execute o comando:
-docker-compose down -v
 
+```
+docker-compose down -v
+```
 ## :electric_plug: Infraestrutura K8S
 
 O Kubernetes(K8S) é uma plataforma de orquestração de contêineres open-source que automatiza o deployment, o escalonamento e a gestão de aplicações contêinerizadas. Ele agrupa contêineres que compõem uma aplicação em unidades lógicas para fácil gestão e descoberta de serviços, oferecendo recursos poderosos como balanceamento de carga, armazenamento persistente e monitoramento, tudo isso de forma declarativa através de arquivos de configuração.

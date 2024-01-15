@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import {EventEmitter} from 'events';
-import { Item, Pedido } from '../../src/pedido/core/domain/entity/pedido.entity';
-import { Produto } from '../../src/pedido/core/domain/entity/produto.entity';
-import { NovoPedidoEvent } from '../../src/pedido/core/application/events/novo-pedido.event';
-import { PedidoDTO } from '../../src/pedido/core/application/usecases/pedidoUseCase/pedido.dto';
+import { Item, Pedido } from '../../src/producao/core/domain/entity/pedido.entity';
+import { NovoPedidoEvent } from '../../src/producao/core/application/events/novo-pedido.event';
+import { PedidoDTO } from '../../src/producao/core/application/usecases/pedidoUseCase/pedido.dto';
+import { Produto } from 'src/producao/core/domain/entity/produto.entity';
 
 const generatePedido = ( pedido: Pedido) => ({
   where: { id: pedido.id },
@@ -41,11 +41,11 @@ async function SetPedidos(id: number): Promise<Pedido> {
   pedido.id = id;
 
   pedido.itens = pedidoDto.itens.map((item) => {
-    const produto = produtos.find((p) => p.id === item.id_produto);
+    const produto = produtos.find((p) => p.id === item.external_id_produto);
     return {
       quantidade: item.quantidade,
       valor: produto.valor,
-      id_produto: item.id_produto,
+      id_produto: item.external_id_produto,
     };
   });
 
@@ -122,7 +122,7 @@ function CreatePedidoDto(id: number) {
     {
       quantidade: id,
       valor: undefined,
-      id_produto: id,
+      external_id_produto: id,
     },
   ];
 

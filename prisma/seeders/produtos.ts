@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 
-// COPY public.produtos (id, nome, id_categoria, valor, descricao, imagem, "createdAt", "updatedAt") FROM stdin;
 const generateProduto = (
   id: number,
   nome: string,

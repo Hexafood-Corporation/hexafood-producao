@@ -1,18 +1,15 @@
   version: '3.8'
   services:
-    postgres:
-      image: postgres:13-alpine
-      container_name: 'hexafood-postgres'
+    mongo:
+      image: mongo:latest
       ports:
-        - 5432:5432
-      env_file:
-        - .env.dev
-      volumes:
-        - postgres:/var/lib/postgresql/data
+        - "27017:27017"
       networks:
-        - hexafood-bridge
+      - hexafood-bridge
+      volumes:
+        - dbdata:/data/db
       healthcheck:
-        test: ["CMD-SHELL", "pg_isready -U userpg -d hexafood"]
+        test: ["CMD", "mongo", "--eval", "db.adminCommand('Mongo is working!')"]
         interval: 10s
         timeout: 5s
         retries: 5
@@ -31,17 +28,17 @@
       ports:
         - 3000:3000
       depends_on:
-        - postgres
+        - mongo
       links:
-        - postgres:postgres
-      command: ["./wait-for-it.sh", "postgres:5432", "--", "./start.sh"]
+        - mongo:mongo
+      command: ["./wait-for-it.sh", "mongo:27017", "--", "./start.sh"]
       volumes:
         - .:/home/node/app
-        - /home/node/app/node_modules
+        - /home/node/app/node_modules    
 
   networks:
     hexafood-bridge:
       driver: bridge
 
   volumes:
-    postgres:
+    dbdata:

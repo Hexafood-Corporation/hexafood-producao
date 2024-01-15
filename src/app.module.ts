@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { PedidoModule } from './pedido/pedido.module';
-import { IdentificacaoModule } from './identificacao/identificacao.module';
-import { PagamentoModule } from './pagamento/pagamento.module';
+import { MongooseModule } from '@nestjs/mongoose';
+
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
@@ -11,9 +10,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       isGlobal: true,
     }),
     EventEmitterModule.forRoot(),
-    IdentificacaoModule,
-    PedidoModule,
-    PagamentoModule,
+    MongooseModule.forRoot('mongodb://localhost/nest')
   ],
 })
 export class AppModule {}
