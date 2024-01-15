@@ -1,36 +1,36 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FindPedidoByExternalPedidoIdUseCase } from '../find.pedido.by.external.pedido.id.usecase';
+import { FindPedidoById } from '../find.pedido.by..id.usecase';
 import { IPedidosRepository } from '../../../../domain/repository/pedidos.repository';
 import { PedidoException } from '../../../exceptions/pedido.exception';
 import { Pedido } from '../../../../../core/domain/entity/pedido.entity';
 import { StatusPedido } from '../../../../../core/domain/enum/status-pedido.enum';
 
 describe('FindPedidoByIdUseCase', () => {
-  let findPedidoByExternalPedidoIdUseCase: FindPedidoByExternalPedidoIdUseCase;
+  let findPedidoByIdUseCase: FindPedidoById;
   let pedidosRepository: IPedidosRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FindPedidoByExternalPedidoIdUseCase,
+        FindPedidoById,
         {
           provide: IPedidosRepository,
           useValue: {
-            findByExternalPedidoId: jest.fn(),
+            findById: jest.fn(),
           },
         },
       ],
     }).compile();
 
-    findPedidoByExternalPedidoIdUseCase = module.get<FindPedidoByExternalPedidoIdUseCase>(FindPedidoByExternalPedidoIdUseCase);
+    findPedidoByIdUseCase = module.get<FindPedidoById>(FindPedidoById);
     pedidosRepository = module.get<IPedidosRepository>(IPedidosRepository);
   });
 
-  describe('findByExternalPedidoId', () => {
+  describe('findById', () => {
     it('should return the pedido when it exists', async () => {
-      const external_pedido_id_mock = 1;
+      const id_pedido = 1;
       const pedido: Partial<Pedido> = {
-        external_pedido_id: external_pedido_id_mock,
+        id: id_pedido,
         status: StatusPedido.EM_PREPARACAO,
         codigo_pedido: 'ABC123',
         valor_total: 10,
@@ -44,20 +44,20 @@ describe('FindPedidoByIdUseCase', () => {
         ],
       };
 
-      jest.spyOn(pedidosRepository, 'findByExternalPedidoId').mockResolvedValue(pedido as Pedido);
+      jest.spyOn(pedidosRepository, 'findById').mockResolvedValue(pedido as Pedido);
 
-      const result = await findPedidoByExternalPedidoIdUseCase.findByExternalPedidoId(external_pedido_id_mock);
+      const result = await findPedidoByIdUseCase.findById(id_pedido);
 
-      expect(pedidosRepository.findByExternalPedidoId).toHaveBeenCalledWith(external_pedido_id_mock);
+      expect(pedidosRepository.findById).toHaveBeenCalledWith(id_pedido);
       expect(result).toEqual(pedido);
     });
 
     it('should throw an exception when the pedido does not exist', async () => {
-      const external_pedido_id_mock = 1;
+      const id = 1;
 
-      jest.spyOn(pedidosRepository, 'findByExternalPedidoId').mockRejectedValue(new PedidoException('Pedido not found'));
-      await expect(findPedidoByExternalPedidoIdUseCase.findByExternalPedidoId(external_pedido_id_mock)).rejects.toThrowError(PedidoException);
-      expect(pedidosRepository.findByExternalPedidoId).toHaveBeenCalledWith(external_pedido_id_mock);
+      jest.spyOn(pedidosRepository, 'findById').mockRejectedValue(new PedidoException('Pedido not found'));
+      await expect(findPedidoByIdUseCase.findById(id)).rejects.toThrowError(PedidoException);
+      expect(pedidosRepository.findById).toHaveBeenCalledWith(id);
     });
   });
 });

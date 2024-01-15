@@ -2,13 +2,13 @@ import { StatusPedido } from '../enum/status-pedido.enum';
 import { Produto } from './produto.entity';
 
 export class Pedido {
-  external_pedido_id: number;
+  id: number;
   codigo_pedido: string;
   valor_total: number;
   status: StatusPedido;
   createdAt?: Date;
   updatedAt?: Date;
-  external_id_cliente?: number;
+  id_cliente?: number;
   itens: Item[];
 
   constructor() {

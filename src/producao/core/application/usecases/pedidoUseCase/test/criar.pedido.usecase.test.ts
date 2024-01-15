@@ -17,24 +17,24 @@ describe('CriarPedidoUseCase', () => {
   it('should create a new pedido', async () => {
     const inputPedido: InputPedidoDTO = {
         status: StatusPedido.INICIADO,
-        external_pedido_id: 1000,
+        id: 1000,
         itens: [
           {
             quantidade: 1,
             valor: 10,
-            external_id_produto: 1,
+            id_produto: 1,
           }
         ],
       }
 
     const createdPedido = {
       status: StatusPedido.INICIADO,
-      external_pedido_id: 1000,
+      id: 1000,
       itens: [
         {
           quantidade: 1,
           valor: 10,
-          external_id_produto: 1,
+          id_produto: 1,
         }
       ],
     };

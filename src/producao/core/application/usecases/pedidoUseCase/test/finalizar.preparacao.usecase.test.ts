@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FinalizarPreparacaoPedidoUseCase } from '../finalizar.preparacao.usecase';
 import { IPedidosRepository } from '../../../../../core/domain/repository/pedidos.repository';
-import { FindPedidoByExternalPedidoIdUseCase } from '../find.pedido.by.external.pedido.id.usecase';
+import { FindPedidoById } from '../find.pedido.by..id.usecase';
 import { Pedido } from '../../../../../core/domain/entity/pedido.entity';
 import { StatusPedido } from '../../../../../core/domain/enum/status-pedido.enum';
 
 describe('FinalizarPreparacaoPedidoUseCase', () => {
   let useCase: FinalizarPreparacaoPedidoUseCase;
   let pedidosRepository: IPedidosRepository;
-  let findPedidoByIdUseCase: FindPedidoByExternalPedidoIdUseCase;
+  let findPedidoByIdUseCase: FindPedidoById;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,9 +21,9 @@ describe('FinalizarPreparacaoPedidoUseCase', () => {
           },
         },
         {
-          provide: FindPedidoByExternalPedidoIdUseCase,
+          provide: FindPedidoById,
           useValue: {
-            findByExternalPedidoId: jest.fn(),
+            findById: jest.fn(),
           },
         },
       ],
@@ -33,8 +33,8 @@ describe('FinalizarPreparacaoPedidoUseCase', () => {
       FinalizarPreparacaoPedidoUseCase,
     );
     pedidosRepository = module.get<IPedidosRepository>(IPedidosRepository);
-    findPedidoByIdUseCase = module.get<FindPedidoByExternalPedidoIdUseCase>(
-      FindPedidoByExternalPedidoIdUseCase,
+    findPedidoByIdUseCase = module.get<FindPedidoById>(
+      FindPedidoById,
     );
   });
 
@@ -42,7 +42,7 @@ describe('FinalizarPreparacaoPedidoUseCase', () => {
     it('should update the status of the pedido to PRONTO', async () => {
       const id = 1;
       const pedido: Partial<Pedido> = {
-        external_pedido_id: id,
+        id: id,
         status: StatusPedido.EM_PREPARACAO,
       };
       const updatedPedido: Partial<Pedido> = {
@@ -51,7 +51,7 @@ describe('FinalizarPreparacaoPedidoUseCase', () => {
       };
 
       jest
-        .spyOn(findPedidoByIdUseCase, 'findByExternalPedidoId')
+        .spyOn(findPedidoByIdUseCase, 'findById')
         .mockResolvedValue(pedido as Pedido);
       jest
         .spyOn(pedidosRepository, 'update')
@@ -60,7 +60,7 @@ describe('FinalizarPreparacaoPedidoUseCase', () => {
       const result = await useCase.execute(id);
 
       expect(result).toEqual(updatedPedido);
-      expect(findPedidoByIdUseCase.findByExternalPedidoId).toHaveBeenCalledWith(id);
+      expect(findPedidoByIdUseCase.findById).toHaveBeenCalledWith(id);
       expect(pedidosRepository.update).toHaveBeenCalledWith(id, updatedPedido);
     });
   });

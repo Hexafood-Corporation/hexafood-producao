@@ -5,7 +5,7 @@ export class CreateItemDTO {
   quantidade: number;
   valor: number;
   @ApiProperty()
-  external_id_produto: number;
+  id_produto: number;
 }
 
 export class DetailItemDTO {
@@ -14,5 +14,5 @@ export class DetailItemDTO {
   @ApiProperty()
   valor: number;
   @ApiProperty()
-  external_id_produto: number;
+  id_produto: number;
 }

@@ -41,11 +41,11 @@ async function SetPedidos(id: number): Promise<Pedido> {
   pedido.id = id;
 
   pedido.itens = pedidoDto.itens.map((item) => {
-    const produto = produtos.find((p) => p.id === item.external_id_produto);
+    const produto = produtos.find((p) => p.id === item.id_produto);
     return {
       quantidade: item.quantidade,
       valor: produto.valor,
-      id_produto: item.external_id_produto,
+      id_produto: item.id_produto,
     };
   });
 
@@ -122,7 +122,7 @@ function CreatePedidoDto(id: number) {
     {
       quantidade: id,
       valor: undefined,
-      external_id_produto: id,
+      id_produto: id,
     },
   ];
 

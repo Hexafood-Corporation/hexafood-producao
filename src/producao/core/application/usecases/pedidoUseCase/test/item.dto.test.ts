@@ -8,12 +8,12 @@ describe('CreateItemDTO', () => {
 
   it('should have properties quantidade, valor, and id_produto', () => {
     const createItemDTO = new CreateItemDTO();
-    createItemDTO.external_id_produto = 1;
+    createItemDTO.id_produto = 1;
     createItemDTO.quantidade = 1;
     createItemDTO.valor = 10; 
     expect(createItemDTO).toHaveProperty('quantidade');
     expect(createItemDTO).toHaveProperty('valor');
-    expect(createItemDTO).toHaveProperty('external_id_produto');
+    expect(createItemDTO).toHaveProperty('id_produto');
   });
 });
 
@@ -25,11 +25,11 @@ describe('DetailItemDTO', () => {
 
   it('should have properties quantidade, valor, and id_produto', () => {
     const detailItemDTO = new DetailItemDTO();
-    detailItemDTO.external_id_produto = 1;
+    detailItemDTO.id_produto = 1;
     detailItemDTO.quantidade = 1;
     detailItemDTO.valor = 10;
     expect(detailItemDTO).toHaveProperty('quantidade');
     expect(detailItemDTO).toHaveProperty('valor');
-    expect(detailItemDTO).toHaveProperty('external_id_produto');
+    expect(detailItemDTO).toHaveProperty('id_produto');
   });
 });

@@ -6,7 +6,7 @@ import { IPedidosRepository } from './core/domain/repository/pedidos.repository'
 import { ProducaoController } from './infraestructure/controller/producao.controller';
 import { PedidosRepository } from './infraestructure/gateway/pedidos.repository';
 import { FinalizarPreparacaoPedidoUseCase } from './core/application/usecases/pedidoUseCase/finalizar.preparacao.usecase';
-import { FindPedidoByExternalPedidoIdUseCase } from './core/application/usecases/pedidoUseCase/find.pedido.by.external.pedido.id.usecase';
+import { FindPedidoById } from './core/application/usecases/pedidoUseCase/find.pedido.by..id.usecase';
 import { IniciarPreparacaoPedidoUseCase } from './core/application/usecases/pedidoUseCase/iniciar.preparacao.usecase';
 import { CriarPedidoUseCase } from './core/application/usecases/pedidoUseCase/criar.pedido.usecase';
 @Module({
@@ -22,10 +22,10 @@ import { CriarPedidoUseCase } from './core/application/usecases/pedidoUseCase/cr
       useExisting: EventEmitter2,
     },
     FinalizarPreparacaoPedidoUseCase,
-    FindPedidoByExternalPedidoIdUseCase,
+    FindPedidoById,
     IniciarPreparacaoPedidoUseCase,
     CriarPedidoUseCase,
   ],
-  exports: [FindPedidoByExternalPedidoIdUseCase, IPedidosRepository],
+  exports: [FindPedidoById, IPedidosRepository],
 })
 export class PedidoModule {}
