@@ -28,4 +28,4 @@ import { CriarPedidoUseCase } from './core/application/usecases/pedidoUseCase/cr
   ],
   exports: [FindPedidoById, IPedidosRepository],
 })
-export class PedidoModule {}
+export class ProducaoModule {}

@@ -1,7 +1,7 @@
   version: '3.8'
   services:
     mongo:
-      image: mongo:latest
+      image: mongo
       ports:
         - "27017:27017"
       networks:
@@ -23,14 +23,14 @@
           - NODE_ENV=development
       env_file:
         - .env.dev
+      environment:
+        - MONGO_URI=mongodb://mongo:27017/MONGODB_URL
       networks:
         - hexafood-bridge
       ports:
         - 3000:3000
       depends_on:
         - mongo
-      links:
-        - mongo:mongo
       command: ["./wait-for-it.sh", "mongo:27017", "--", "./start.sh"]
       volumes:
         - .:/home/node/app

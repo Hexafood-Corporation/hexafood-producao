@@ -1,7 +1,7 @@
 
 import { Inject } from '@nestjs/common';
 import { FindPedidoById } from "./find.pedido.by..id.usecase";
-import { Pedido } from '../../../../core/schemas/pedido.schema';
+import { IPedido } from '../../../../core/schemas/pedido.schema';
 import { IPedidosRepository } from '../../../..//core/domain/repository/pedidos.repository';
 import { StatusPedido } from '../../../../core/domain/enum/status-pedido.enum';
 
@@ -12,7 +12,7 @@ export class IniciarPreparacaoPedidoUseCase {
       private findPedidoByIdUseCase: FindPedidoById,
     ) {}
   
-async execute(id: number): Promise<Pedido> {
+async execute(id: number): Promise<IPedido> {
 
     const pedido = await this.findPedidoByIdUseCase.findById(id);
 

@@ -3,7 +3,7 @@ import { IPedidosRepository } from "../../../../core/domain/repository/pedidos.r
 import { InputPedidoDTO } from "./pedido.dto";
 import { StatusPedido } from "../../../../core/domain/enum/status-pedido.enum";
 import { CriarPedidoUseCase } from './criar.pedido.usecase';
-import { Pedido } from "../../../../core/schemas/pedido.schema";
+import { IPedido } from "../../../../core/schemas/pedido.schema";
 
 
 export class ReceberPedidoUseCase {
@@ -12,7 +12,7 @@ export class ReceberPedidoUseCase {
     private criarPedidoUseCase: CriarPedidoUseCase,
   ) {}
 
-  async execute(pedidoInput: InputPedidoDTO): Promise<Pedido> {
+  async execute(pedidoInput: InputPedidoDTO): Promise<IPedido> {
     const pedidoCriado = await this.criarPedidoUseCase.execute({
       ...pedidoInput,
       status: StatusPedido.RECEBIDO,

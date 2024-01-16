@@ -1,59 +1,51 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import { StatusPedido } from '../domain/enum/status-pedido.enum';
+import { Item } from '../domain/entity/pedido.entity';
+import { ItemSchema } from './item.schema';
 
-export type PedidoDocument = HydratedDocument<Pedido>;
-
-@Schema()
-export class Item {
-  @Prop({ required: true })
-  quantidade: number;
+interface IPedido extends Document {
+  external_pedido_id: string;
+  codigo_pedido: string;
+  valor_total: number;
+  status: StatusPedido;
+  createdAt?: Date;
+  updatedAt?: Date;
+  id_cliente?: number;
+  itens: Item[];
 }
 
-export const ItemSchema = SchemaFactory.createForClass(Item);
+const PedidoSchema: Schema = new Schema({
+  external_pedido_id: { type: String, required: true },
+  codigo_pedido: { type: String, required: true },
+  valor_total: { type: Number, required: true },
+  status: { type: String, enum: Object.values(StatusPedido), required: true },
+  createdAt: { type: Date },
+  updatedAt: { type: Date },
+  id_cliente: { type: Number },
+  itens: { type: [ItemSchema], default: [] },
+});
 
-@Schema()
-export class Pedido {
-  @Prop({required: true})
-  external_pedido_id?: string;
+function generateRandomCode(): string {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+    result += characters.charAt(
+      Math.floor(Math.random() * characters.length),
+    );
+  }
+  return result;
+}
 
-  @Prop({ required: true })
-  codigo_pedido: string;
-
-  @Prop({ required: true })
-  valor_total: number;
-
-  @Prop({ required: true, enum: StatusPedido })
-  status: StatusPedido;
-
-  @Prop()
-  createdAt?: Date;
-
-  @Prop()
-  updatedAt?: Date;
-
-  @Prop()
-  id_cliente?: number;
-
-  @Prop({ type: [ItemSchema], default: [] })
-  itens: Item[];
-
-  constructor() {
-    this.codigo_pedido = this.generateRandomCode();
+PedidoSchema.pre('save', function (next) {
+  if (!this.codigo_pedido) {
+    this.codigo_pedido = generateRandomCode();
+  }
+  if (!this.status) {
     this.status = StatusPedido.INICIADO;
   }
+  next();
+});
 
-  //Gera um código randômico de 6 dígitos
-  private generateRandomCode(): string {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < 6; i++) {
-      result += characters.charAt(
-        Math.floor(Math.random() * characters.length),
-      );
-    }
-    return result;
-  }
-}
+const Pedido = mongoose.model<IPedido>('Pedido', PedidoSchema);
 
-export const PedidoSchema = SchemaFactory.createForClass(Pedido);
+export { Pedido, IPedido };
