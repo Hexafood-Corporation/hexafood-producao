@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Connection, Model } from 'mongoose';
 import { Pedido } from 'src/producao/core/domain/entity/pedido.entity';
 import { IPedidosRepository } from 'src/producao/core/domain/repository/pedidos.repository';
 
 @Injectable()
 export class PedidosRepository implements IPedidosRepository {
-  constructor(@InjectModel(Pedido.name) private pedidoModel: Model<Pedido>) { }
+  constructor(
+    @InjectModel(Pedido.name) private pedidoModel: Model<Pedido>,
+  ) { }
 
   async create(pedido: Pedido): Promise<Pedido> {
     const createdPedido = new this.pedidoModel(pedido);

@@ -14,7 +14,7 @@ interface IPedido extends Document {
   itens: Item[];
 }
 
-const PedidoSchema: Schema = new Schema({
+export const PedidoSchema: Schema = new Schema({
   external_pedido_id: { type: String, required: true },
   codigo_pedido: { type: String, required: true },
   valor_total: { type: Number, required: true },

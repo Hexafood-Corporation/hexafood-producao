@@ -1,19 +1,14 @@
   version: '3.8'
   services:
     mongo:
+      container_name: mongo-hexafood
       image: mongo
       ports:
         - "27017:27017"
       networks:
       - hexafood-bridge
       volumes:
-        - dbdata:/data/db
-      healthcheck:
-        test: ["CMD", "mongo", "--eval", "db.adminCommand('Mongo is working!')"]
-        interval: 10s
-        timeout: 5s
-        retries: 5
-
+        - ./data:/data/db
     api:
       container_name: 'hexafood-api'
       build:
@@ -34,7 +29,9 @@
       command: ["./wait-for-it.sh", "mongo:27017", "--", "./start.sh"]
       volumes:
         - .:/home/node/app
-        - /home/node/app/node_modules    
+        - /home/node/app/node_modules  
+      links:
+        - mongo  
 
   networks:
     hexafood-bridge:

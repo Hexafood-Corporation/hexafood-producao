@@ -12,7 +12,7 @@ import { ProducaoModule } from './producao/producao.module';
       isGlobal: true,
     }),
     EventEmitterModule.forRoot(),
-    MongooseModule.forRoot('mongodb://localhost/nest')
+    MongooseModule.forRoot(process.env.MONGODB_URI)
   ],
 })
 export class AppModule {}

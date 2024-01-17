@@ -9,7 +9,32 @@ import { FinalizarPreparacaoPedidoUseCase } from './core/application/usecases/pe
 import { FindPedidoById } from './core/application/usecases/pedidoUseCase/find.pedido.by..id.usecase';
 import { IniciarPreparacaoPedidoUseCase } from './core/application/usecases/pedidoUseCase/iniciar.preparacao.usecase';
 import { CriarPedidoUseCase } from './core/application/usecases/pedidoUseCase/criar.pedido.usecase';
+import { MongooseModule } from '@nestjs/mongoose';
+import { PedidoSchema } from './core/schemas/pedido.schema';
+import { ItemSchema } from './core/schemas/item.schema';
+import { ProdutoSchema } from './core/schemas/produto.schema';
+import { CategoriaSchema } from './core/schemas/categoria.schema';
 @Module({
+  imports: [
+    MongooseModule.forFeature([
+      {
+        name: 'Pedido',
+        schema: PedidoSchema,
+      },
+      {
+        name: 'Item',
+        schema: ItemSchema,
+      },
+      {
+        name: 'Produto',
+        schema: ProdutoSchema,
+      },
+      {
+        name: 'Categoria',
+        schema: CategoriaSchema,
+      }
+    ])
+  ],
   controllers: [ ProducaoController],
   providers: [
     { provide: IPedidosRepository, useClass: PedidosRepository },
