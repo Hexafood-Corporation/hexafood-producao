@@ -6,11 +6,17 @@
       ports:
         - "27017:27017"
       networks:
-      - hexafood-bridge
+        - hexafood-bridge
       volumes:
         - ./data:/data/db
-    api:
-      container_name: 'hexafood-api'
+        - ./init-mongo.js:/docker-entrypoint-initdb.d/init.js:ro
+      environment:
+        - MONGO_INITDB_ROOT_USERNAME=mongouser
+        - MONGO_INITDB_ROOT_PASSWORD=mongopassword
+        - MONGO_INITDB_DATABASE=mydatabase
+      restart: on-failure
+    api-producao:
+      container_name: 'hexafood-api-producao'
       build:
         context: .
         dockerfile: Dockerfile

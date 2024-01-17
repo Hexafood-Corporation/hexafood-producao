@@ -4,8 +4,6 @@ import { DatabaseModule } from './producao/infraestructure/database/database.mod
 
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ProducaoModule } from './producao/producao.module';
-import { AppController } from './app.controller';
-import { ProducaoController } from './producao/infraestructure/controller/producao.controller';
 
 @Module({
   imports: [
@@ -15,10 +13,6 @@ import { ProducaoController } from './producao/infraestructure/controller/produc
       isGlobal: true,
     }),
     EventEmitterModule.forRoot(),
-  ],
-  controllers: [
-    AppController,
-    ProducaoController
   ],
 })
 export class AppModule {}
