@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { MONGO_URL } from 'src/config/env';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.MONGODB_URL),
+    MongooseModule.forRoot(MONGO_URL),
   ],
 })
-export class MongooseDbModule { }
+export class MongooseDbModule { 
+
+}
