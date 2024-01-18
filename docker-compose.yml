@@ -11,9 +11,7 @@
         - ./data:/data/db
         - ./init-mongo.js:/docker-entrypoint-initdb.d/init.js:ro
       environment:
-        - MONGO_INITDB_ROOT_USERNAME=mongouser
-        - MONGO_INITDB_ROOT_PASSWORD=mongopassword
-        - MONGO_INITDB_DATABASE=mydatabase
+        - MONGO_URI=mongodb://localhost:27017/hexafood
       restart: on-failure
     api-producao:
       container_name: 'hexafood-api-producao'
@@ -25,9 +23,7 @@
       env_file:
         - .env.dev
       environment:
-        - MONGO_URI=mongodb://mongo:27017/MONGODB_URL
-      networks:
-        - hexafood-bridge
+        - MONGO_URI=mongodb://localhost:27017/hexafood
       ports:
         - 3000:3000
       depends_on:
@@ -44,4 +40,4 @@
       driver: bridge
 
   volumes:
-    dbdata:
+    mongodb_data:
