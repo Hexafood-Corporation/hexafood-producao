@@ -1,17 +1,5 @@
   version: '3.8'
-  services:
-    dynamodb-local:
-      command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
-      image: "amazon/dynamodb-local:latest"
-      container_name: dynamodb-local
-      ports:
-        - "8000:8000"
-      volumes:
-        - "./docker/dynamodb:/home/dynamodblocal/data"
-      working_dir: /home/dynamodblocal
-      networks:
-        - hexafood-bridge
-        
+  services:    
     api-producao:
       container_name: 'hexafood-api-producao'
       build:
@@ -25,6 +13,7 @@
         AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
         AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
         REGION: 'eu-west-1'
+        DYNAMODB_ENDPOINT: 'http://localstack:4566'
 
       ports:
         - 3000:3000
@@ -32,7 +21,7 @@
         - "dynamodb-local"
       links:
         - "dynamodb-local"
-      command: ["./wait-for-it.sh", "dynamodb:8000", "--", "./start.sh"]
+      command: ["./wait-for-it.sh", "dynamodb:4566", "--", "./start.sh"]
       volumes:
         - .:/home/node/app
         - /home/node/app/node_modules  
@@ -47,7 +36,7 @@
         - AWS_DEFAULT_REGION=us-east-1
         - DEBUG=1
         - LOCALSTACK_PERSISTENCE=1
-        - SERVICES=sqs
+        - SERVICES=sqs,dynamodb
         - DEFAULT_REGION=us-east-1
         - EDGE_PORT=4566
         - SQS_ENDPOINT_STRATEGY=path
