@@ -28,6 +28,7 @@
     "compose:down": "docker compose --env-file .env down -v"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.496.0",
     "@faker-js/faker": "^8.0.2",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.2",
@@ -38,6 +39,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^7.0.4",
     "@nestjs/typeorm": "^9.0.1",
+    "aws-sdk": "^2.1540.0",
     "dotenv": "^16.1.4",
     "faker": "^6.6.6",
     "mongoose": "^8.0.4",

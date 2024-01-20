@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { MongooseDbModule } from './mongo.module';
+import { DynamoDBModule } from './dynamodb.module';
 
 @Module({
   imports: [
-    MongooseDbModule,
+    DynamoDBModule,
   ],
 })
 export class DatabaseModule { }

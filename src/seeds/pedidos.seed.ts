@@ -1,9 +1,13 @@
-import { connect, disconnect } from 'mongoose';
-import { StatusPedido } from '../producao/core/domain/enum/status-pedido.enum';
-import {IPedido, Pedido} from '../producao/core/schemas/pedido.schema';
-import { MONGO_URI } from '../config/env';
+import { DynamoDB } from 'aws-sdk';
+import { StatusPedido } from 'src/producao/core/domain/enum/status-pedido.enum';
+import { IPedido } from 'src/producao/core/schemas/pedido.schema';
 
 async function seedPedidos() {
+  const dynamoDB = new DynamoDB.DocumentClient({
+    region: process.env.AWS_REGION,
+    endpoint: process.env.AWS_DYNAMODB_ENDPOINT,
+  });
+
   const pedidos: Partial<IPedido>[] = [
     {
       external_pedido_id: '1',
@@ -44,11 +48,14 @@ async function seedPedidos() {
   ];
 
   for (const pedido of pedidos) {
-    await new Pedido(pedido).save();
+    await dynamoDB.put({
+      TableName: 'NomeDaTabelaPedidos',
+      Item: pedido,
+    }).promise();
   }
 }
 
-connect('mongodb://localhost:27017/hexafood')
-  .then(() => seedPedidos())
-  .then(() => disconnect())
-  .catch(error => console.error('Erro ao executar seeds:', error));
+
+seedPedidos()
+  .then(() => console.log('Seeds executados com sucesso'))
+  .catch(error => console.error('Erro ao executar seeds:', error))

@@ -1,53 +1,95 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { DynamoDB } from 'aws-sdk';
 import { InputCategoriaDto, OutputCategoriaDto } from 'src/producao/core/application/usecases/categoriaUseCase/categoria.dto';
 import { ICategoriasRepository } from 'src/producao/core/domain/repository/categorias.repository';
 import { Categoria } from 'src/producao/core/schemas/categoria.schema';
 
 @Injectable()
 export class CategoriasRepository implements ICategoriasRepository {
-  constructor(@InjectModel(Categoria.name) private categoriaModel: Model<Categoria>) { }
+  private readonly dynamoDB: DynamoDB.DocumentClient;
+  constructor() {
+    this.dynamoDB = new DynamoDB.DocumentClient({
+      region: process.env.AWS_REGION,
+      endpoint: process.env.AWS_DYNAMODB_ENDPOINT,
+    });
+  }
 
   async create(createCategoriaDto: Categoria): Promise<any> {
-    const createdPedido = new this.categoriaModel(createCategoriaDto);
-    return createdPedido.save();
+    const params: DynamoDB.DocumentClient.PutItemInput = {
+      TableName: 'Categorias',
+      Item: createCategoriaDto,
+    };
+
+    return this.dynamoDB.put(params).promise();
   }
 
   async findOne(id: number): Promise<OutputCategoriaDto> {
-    const categoria = await this.categoriaModel.findOne({ id: id }).exec();
-    if (!categoria) {
+    const params: DynamoDB.DocumentClient.GetItemInput = {
+      TableName: 'Categorias',
+      Key: { id },
+    };
+
+    const result = await this.dynamoDB.get(params).promise();
+
+    if (!result.Item) {
       throw new Error('Categoria não encontrada');
     }
+
     return {
-      id: categoria.id,
-      nome: categoria.nome,
+      id: result.Item.id,
+      nome: result.Item.nome,
     };
   }
 
   async findAll(): Promise<OutputCategoriaDto[]> {
-    const categorias = await this.categoriaModel.find().exec();
-    if (!categorias) {
-      throw new Error('Não há categorias cadastradas.');
-    }
-    return categorias.map(categoria => ({
-      id: categoria.id,
-      nome: categoria.nome,
-    }));
+    const params: DynamoDB.DocumentClient.ScanInput = {
+      TableName: 'Categorias',
+    };
+
+    const result = await this.dynamoDB.scan(params).promise();
+
+    return result.Items as OutputCategoriaDto[];
   }
   
   async findByName(name: string): Promise<Categoria> {
-      return this.categoriaModel.findOne({
-        name: name
-      }).exec();
+    const params: DynamoDB.DocumentClient.ScanInput = {
+      TableName: 'Categorias',
+      FilterExpression: 'contains(nome, :nome)',
+      ExpressionAttributeValues: {
+        ':nome': name,
+      },
+    };
+
+    const result = await this.dynamoDB.scan(params).promise();
+
+    if (!result.Items) {
+      throw new Error('Categoria não encontrada');
+    }
+
+    return result.Items[0] as Categoria;
   }
 
   async update(id: number, updateCategoriaDto: InputCategoriaDto): Promise<any> {
-    return this.categoriaModel.findOneAndUpdate({ id: id }, updateCategoriaDto).exec();
+    const params: DynamoDB.DocumentClient.UpdateItemInput = {
+      TableName: 'Categorias',
+      Key: { id },
+      UpdateExpression: 'set nome = :nome',
+      ExpressionAttributeValues: {
+        ':nome': updateCategoriaDto.nome,
+      },
+    };
+
+    return this.dynamoDB.update(params).promise();
   }
 
   async remove(id: number): Promise<any> {
-    return this.categoriaModel.findOneAndDelete({ id: id }).exec();
+    const params: DynamoDB.DocumentClient.DeleteItemInput = {
+      TableName: 'Categorias',
+      Key: { id },
+    };
+
+    return this.dynamoDB.delete(params).promise();
   }
 
 
