@@ -1,4 +1,4 @@
-import { InputCategoriaDto, OutputCategoriaDto } from '../categoria.dto';
+import { InputCategoriaDto, OutputCategoriaDto } from "../categoria.dto";
 
 describe('InputCategoriaDto', () => {
   it('should create an instance', () => {

@@ -1,8 +1,8 @@
 import { ReceberPedidoUseCase } from '../receber.pedido.usecase';
 import { CriarPedidoUseCase } from '../criar.pedido.usecase';
-import { IPedidosRepository } from '../../../../../core/domain/repository/pedidos.repository';
 import { InputPedidoDTO } from '../pedido.dto';
-import { StatusPedido } from '../../../../../core/domain/enum/status-pedido.enum';
+import { IPedidosRepository } from 'src/producao/core/domain/repository/pedidos.repository';
+import { StatusPedido } from 'src/producao/core/domain/enum/status-pedido.enum';
 
 describe('ReceberPedidoUseCase', () => {
   let receberPedidoUseCase: ReceberPedidoUseCase;

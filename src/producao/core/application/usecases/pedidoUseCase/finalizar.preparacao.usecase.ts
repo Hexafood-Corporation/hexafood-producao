@@ -1,8 +1,9 @@
-import { IPedidosRepository } from "../../../../core/domain/repository/pedidos.repository";
-import { Inject } from '@nestjs/common';
-import { Pedido } from "../../../../core/domain/entity/pedido.entity";
-import { StatusPedido } from "../../../../core/domain/enum/status-pedido.enum";
+import { Inject } from "@nestjs/common";
+import { IPedidosRepository } from "src/producao/core/domain/repository/pedidos.repository";
 import { FindPedidoById } from "./find.pedido.by..id.usecase";
+import { StatusPedido } from "src/producao/core/domain/enum/status-pedido.enum";
+import { Pedido } from "src/producao/core/domain/entity/pedido.entity";
+
 
 export class FinalizarPreparacaoPedidoUseCase {
     constructor(

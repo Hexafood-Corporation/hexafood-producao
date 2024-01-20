@@ -1,9 +1,9 @@
 import { Inject } from "@nestjs/common";
-import { IPedidosRepository } from "../../../../core/domain/repository/pedidos.repository";
+import { IPedidosRepository } from "src/producao/core/domain/repository/pedidos.repository";
+import { CriarPedidoUseCase } from "./criar.pedido.usecase";
 import { InputPedidoDTO } from "./pedido.dto";
-import { StatusPedido } from "../../../../core/domain/enum/status-pedido.enum";
-import { CriarPedidoUseCase } from './criar.pedido.usecase';
-import { IPedido } from "../../../../core/schemas/pedido.schema";
+import { IPedido } from "src/producao/core/schemas/pedido.schema";
+import { StatusPedido } from "src/producao/core/domain/enum/status-pedido.enum";
 
 
 export class ReceberPedidoUseCase {

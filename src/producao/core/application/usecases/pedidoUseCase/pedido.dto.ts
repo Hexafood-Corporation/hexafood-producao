@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateItemDTO } from './item.dto';
-import { StatusPedido } from '../../../../core/domain/enum/status-pedido.enum';
+import { StatusPedido } from 'src/producao/core/domain/enum/status-pedido.enum';
 
 export class InputPedidoDTO {
   id?: number;

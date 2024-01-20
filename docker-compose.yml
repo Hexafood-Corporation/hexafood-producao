@@ -10,8 +10,10 @@
       volumes:
         - ./data:/data/db
         - ./init-mongo.js:/docker-entrypoint-initdb.d/init.js:ro
+      env_file:
+        - .env
       environment:
-        - MONGO_URI=mongodb://localhost:27017/hexafood
+        - MONGO_URI='mongodb://localhost:27017/hexafood'
       restart: on-failure
     api-producao:
       container_name: 'hexafood-api-producao'
@@ -21,19 +23,39 @@
         args:
           - NODE_ENV=development
       env_file:
-        - .env.dev
+        - .env
       environment:
-        - MONGO_URI=mongodb://localhost:27017/hexafood
+        - MONGO_URI='mongodb://localhost:27017/hexafood'
       ports:
         - 3000:3000
       depends_on:
         - mongo
-      command: ["./wait-for-it.sh", "mongo:27017", "--", "./start.sh"]
+      command: ["./wait-for-it.sh", "'mongo:27017'", "--", "./start.sh"]
       volumes:
         - .:/home/node/app
         - /home/node/app/node_modules  
       links:
-        - mongo  
+        - mongo
+      localstack:
+        image: localstack/localstack:latest
+        ports:
+          - '4566-4597:4566-4597'
+        environment:
+          - AWS_ACCESS_KEY_ID=dummy
+          - AWS_SECRET_ACCESS_KEY=dummy
+          - AWS_DEFAULT_REGION=us-east-1
+          - DEBUG=1
+          - LOCALSTACK_PERSISTENCE=1
+          - SERVICES=sqs
+          - DEFAULT_REGION=us-east-1
+          - EDGE_PORT=4566
+          - SQS_ENDPOINT_STRATEGY=path
+          - HOSTNAME_EXTERNAL=localstack
+        volumes:
+          - "./docker-compose/localstack:/var/lib/localstack"
+        networks:
+          - hexafood-bridge
+
 
   networks:
     hexafood-bridge:

@@ -1,10 +1,7 @@
 module.exports = {
-  roots: ['<rootDir>/src'],
-  rootDir: './',
-  testMatch: ['**/?(*.)+(spec|test).+(ts|tsx|js)'],
-
-  transform: {
-    '^.+.tsx?$': 'ts-jest',
+  preset: "ts-jest",
+  testEnvironment: "node",
+  moduleNameMapper: {
+    "^src/(.*)$": "<rootDir>/src/$1",
   },
-  moduleDirectories: ['node_modules', 'src'],
 };

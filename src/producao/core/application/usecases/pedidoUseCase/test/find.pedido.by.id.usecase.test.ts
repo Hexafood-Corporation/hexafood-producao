@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FindPedidoById } from '../find.pedido.by..id.usecase';
-import { IPedidosRepository } from '../../../../domain/repository/pedidos.repository';
+import { IPedidosRepository } from 'src/producao/core/domain/repository/pedidos.repository';
+import { Pedido } from 'src/producao/core/domain/entity/pedido.entity';
+import { StatusPedido } from 'src/producao/core/domain/enum/status-pedido.enum';
 import { PedidoException } from '../../../exceptions/pedido.exception';
-import { Pedido } from '../../../../../core/domain/entity/pedido.entity';
-import { StatusPedido } from '../../../../../core/domain/enum/status-pedido.enum';
+
 
 describe('FindPedidoByIdUseCase', () => {
   let findPedidoByIdUseCase: FindPedidoById;

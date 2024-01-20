@@ -1,6 +1,7 @@
 import { connect, disconnect } from 'mongoose';
 import { StatusPedido } from '../producao/core/domain/enum/status-pedido.enum';
 import {IPedido, Pedido} from '../producao/core/schemas/pedido.schema';
+import { MONGO_URI } from '../config/env';
 
 async function seedPedidos() {
   const pedidos: Partial<IPedido>[] = [
@@ -47,7 +48,7 @@ async function seedPedidos() {
   }
 }
 
-connect('mongodb://localhost:27017/mydatabase',)
+connect('mongodb://localhost:27017/hexafood')
   .then(() => seedPedidos())
   .then(() => disconnect())
   .catch(error => console.error('Erro ao executar seeds:', error));

@@ -1,8 +1,8 @@
 import { Inject } from "@nestjs/common";
-import { IPedidosRepository } from "../../../../core/domain/repository/pedidos.repository";
-import { IPedido } from "../../../../core/schemas/pedido.schema";
 
 import { InputPedidoDTO } from "./pedido.dto";
+import { IPedido } from "src/producao/core/schemas/pedido.schema";
+import { IPedidosRepository } from "src/producao/core/domain/repository/pedidos.repository";
 export class CriarPedidoUseCase {
   constructor(
     @Inject(IPedidosRepository)
