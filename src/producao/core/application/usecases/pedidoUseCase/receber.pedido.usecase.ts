@@ -13,6 +13,7 @@ export class ReceberPedidoUseCase {
   ) {}
 
   async execute(pedidoInput: InputPedidoDTO): Promise<IPedido> {
+    
     const pedidoCriado = await this.criarPedidoUseCase.execute({
       ...pedidoInput,
       status: StatusPedido.RECEBIDO,

@@ -19,5 +19,6 @@ async execute(id: number): Promise<Pedido> {
     }
     pedido.status = StatusPedido.PRONTO;
     return await this.pedidosRepository.update(id, pedido);
+    // retorna mensagem de pronto
   }
 }

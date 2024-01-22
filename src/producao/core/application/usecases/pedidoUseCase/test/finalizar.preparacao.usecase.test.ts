@@ -65,4 +65,20 @@ describe('FinalizarPreparacaoPedidoUseCase', () => {
       expect(pedidosRepository.update).toHaveBeenCalledWith(id, updatedPedido);
     });
   });
+
+  it('should return an error if the pedido is not in preparation', async () => {
+    const id = 1;
+    const pedido: Partial<Pedido> = {
+      id: id,
+      status: StatusPedido.PRONTO,
+    };
+
+    jest
+      .spyOn(findPedidoByIdUseCase, 'findById')
+      .mockResolvedValue(pedido as Pedido);
+
+    await expect(useCase.execute(id)).rejects.toThrowError(
+      'Pedido não está em preparação',
+    );
+  });
 });

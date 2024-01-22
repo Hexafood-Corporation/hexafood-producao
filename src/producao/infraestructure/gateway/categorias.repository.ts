@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { DynamoDB } from 'aws-sdk';
 import { InputCategoriaDto, OutputCategoriaDto } from 'src/producao/core/application/usecases/categoriaUseCase/categoria.dto';
 import { ICategoriasRepository } from 'src/producao/core/domain/repository/categorias.repository';
@@ -8,11 +7,8 @@ import { Categoria } from 'src/producao/core/schemas/categoria.schema';
 @Injectable()
 export class CategoriasRepository implements ICategoriasRepository {
   private readonly dynamoDB: DynamoDB.DocumentClient;
-  constructor() {
-    this.dynamoDB = new DynamoDB.DocumentClient({
-      region: process.env.AWS_REGION,
-      endpoint: process.env.AWS_DYNAMODB_ENDPOINT,
-    });
+  constructor(dynamoDb: DynamoDB.DocumentClient) {
+    this.dynamoDB = dynamoDb
   }
 
   async create(createCategoriaDto: Categoria): Promise<any> {
