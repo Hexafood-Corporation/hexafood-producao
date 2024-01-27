@@ -11,7 +11,7 @@ import AWS from 'aws-sdk';
       provide: 'AWS',
       useFactory: (configService: ConfigService) => {
         AWS.config.update({
-          region: configService.get<string>('AWS_REGION'),
+          region: configService.get<string>('AWS_DEFAULT_REGION'),
           accessKeyId: configService.get<string>('AWS_ACCESS_KEY_ID'),
           secretAccessKey: configService.get<string>('AWS_SECRET_ACCESS_KEY'),
         });

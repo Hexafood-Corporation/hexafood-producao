@@ -15,7 +15,7 @@ export class DynamoDBModule {
           provide: 'DYNAMODB_OPTIONS',
           useFactory: async (configService: ConfigService) => ({
             endpoint: configService.get('AWS_DYNAMODB_ENDPOINT'),
-            region: configService.get('AWS_REGION'),
+            region: configService.get('AWS_DEFAULT_REGION'),
           }),
           inject: [ConfigService],
         },

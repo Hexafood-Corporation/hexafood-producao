@@ -7,7 +7,7 @@ export class DynamoDBService {
 
   constructor() {
     this.dynamoDB = new DynamoDB.DocumentClient({
-      region: process.env.AWS_REGION,
+      region: process.env.AWS_DEFAULT_REGION,
       endpoint: process.env.AWS_DYNAMODB_ENDPOINT,
     });
   }

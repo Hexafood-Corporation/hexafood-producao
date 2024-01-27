@@ -39,7 +39,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^7.0.4",
     "@nestjs/typeorm": "^9.0.1",
-    "aws-sdk": "^2.1540.0",
+    "aws-sdk": "^2.1545.0",
     "dotenv": "^16.1.4",
     "faker": "^6.6.6",
     "mongoose": "^8.0.4",

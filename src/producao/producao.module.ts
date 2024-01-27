@@ -10,6 +10,7 @@ import { FindPedidoById } from './core/application/usecases/pedidoUseCase/find.p
 import { IniciarPreparacaoPedidoUseCase } from './core/application/usecases/pedidoUseCase/iniciar.preparacao.usecase';
 import { CriarPedidoUseCase } from './core/application/usecases/pedidoUseCase/criar.pedido.usecase';
 import { DynamoDBModule } from './infraestructure/database/dynamodb.module';
+import { ListarPedidosUseCase } from './core/application/usecases/pedidoUseCase/listar.pedidos.usecase';
 @Module({
   imports: [
     DynamoDBModule
@@ -29,6 +30,7 @@ import { DynamoDBModule } from './infraestructure/database/dynamodb.module';
     FindPedidoById,
     IniciarPreparacaoPedidoUseCase,
     CriarPedidoUseCase,
+    ListarPedidosUseCase
   ],
   exports: [FindPedidoById, IPedidosRepository],
 })

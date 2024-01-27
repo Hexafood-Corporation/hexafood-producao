@@ -8,14 +8,18 @@ import { StatusPedido } from 'src/producao/core/domain/enum/status-pedido.enum';
 @Injectable()
 export class PedidosRepository implements IPedidosRepository {
   private dynamoDb: DynamoDB.DocumentClient;
+  private readonly tableName = 'pedidos';
 
   constructor() {
-    this.dynamoDb = new DynamoDB.DocumentClient();
+    this.dynamoDb =  new DynamoDB.DocumentClient({
+      region: process.env.AWS_DEFAULT_REGION,
+      endpoint: process.env.AWS_DYNAMODB_ENDPOINT,
+    });
   }
 
   async create(data: InputPedidoDTO): Promise<Pedido> {
     const params = {
-      TableName: 'Pedidos',
+      TableName: this.tableName,
       Item: data
     };
 
@@ -26,7 +30,7 @@ export class PedidosRepository implements IPedidosRepository {
 
   async findAll(status?: StatusPedido): Promise<Pedido[]> {
     const params = {
-      TableName: 'Pedidos',
+      TableName: this.tableName,
     };
 
     const result = await this.dynamoDb.scan(params).promise();
@@ -36,7 +40,7 @@ export class PedidosRepository implements IPedidosRepository {
 
   async update(id: number, pedido: Pedido) {
     const params = {
-      TableName: 'Pedidos',
+      TableName: this.tableName,
       Key: { id },
       UpdateExpression: 'set #status = :status',
       ExpressionAttributeNames: {
@@ -53,7 +57,7 @@ export class PedidosRepository implements IPedidosRepository {
 
   async findByStatus(status: StatusPedido) {
     const params = {
-      TableName: 'Pedidos',
+      TableName: this.tableName,
       FilterExpression: '#status = :status',
       ExpressionAttributeNames: {
         '#status': 'status'
@@ -70,7 +74,7 @@ export class PedidosRepository implements IPedidosRepository {
 
   async findById(id: number): Promise<Pedido> {
     const params = {
-      TableName: 'Pedidos',
+      TableName: this.tableName,
       Key: { id }
     };
 
@@ -81,7 +85,7 @@ export class PedidosRepository implements IPedidosRepository {
 
   async findByCodigo(codigo_pedido: string): Promise<PedidoDTO> {
     const params = {
-      TableName: 'Pedidos',
+      TableName: this.tableName,
       FilterExpression: '#codigo_pedido = :codigo_pedido',
       ExpressionAttributeNames: {
         '#codigo_pedido': 'codigo_pedido'
