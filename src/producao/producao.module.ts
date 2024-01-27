@@ -11,6 +11,9 @@ import { IniciarPreparacaoPedidoUseCase } from './core/application/usecases/pedi
 import { CriarPedidoUseCase } from './core/application/usecases/pedidoUseCase/criar.pedido.usecase';
 import { DynamoDBModule } from './infraestructure/database/dynamodb.module';
 import { ListarPedidosUseCase } from './core/application/usecases/pedidoUseCase/listar.pedidos.usecase';
+import { ReceberPedidoUseCase } from './core/application/usecases/pedidoUseCase/receber.pedido.usecase';
+import { PedidoRecebidoConsumer } from './infraestructure/queue/pedido-recebido.consumer';
+import { PedidoRecebidoListener } from './infraestructure/gateway/listeners/pedido-recebido.listener';
 @Module({
   imports: [
     DynamoDBModule
@@ -30,7 +33,10 @@ import { ListarPedidosUseCase } from './core/application/usecases/pedidoUseCase/
     FindPedidoById,
     IniciarPreparacaoPedidoUseCase,
     CriarPedidoUseCase,
-    ListarPedidosUseCase
+    ListarPedidosUseCase,
+    ReceberPedidoUseCase,
+    PedidoRecebidoConsumer,
+    PedidoRecebidoListener
   ],
   exports: [FindPedidoById, IPedidosRepository],
 })

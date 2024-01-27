@@ -13,8 +13,7 @@ describe('ReceberPedidoUseCase', () => {
     pedidosRepository = {
       create: jest.fn(),
     };
-    criarPedidoUseCase = new CriarPedidoUseCase(pedidosRepository as IPedidosRepository);
-    receberPedidoUseCase = new ReceberPedidoUseCase(criarPedidoUseCase);
+    receberPedidoUseCase = new ReceberPedidoUseCase(pedidosRepository as IPedidosRepository);
   });
 
   it('should receive a pedido', async () => {

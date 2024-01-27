@@ -26,6 +26,8 @@ export class PedidoDTO {
   @ApiProperty()
   id?: number;
   @ApiProperty()
+  codigo_pedido?: string;
+  @ApiProperty()
   id_cliente?: number;
   @ApiProperty({ type: () => [CreateItemDTO] })
   itens: CreateItemDTO[];
