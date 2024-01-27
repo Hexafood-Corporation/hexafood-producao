@@ -14,6 +14,7 @@ describe('ReceberPedidoUseCase', () => {
       create: jest.fn(),
     };
     receberPedidoUseCase = new ReceberPedidoUseCase(pedidosRepository as IPedidosRepository);
+    criarPedidoUseCase = new CriarPedidoUseCase(pedidosRepository as IPedidosRepository);
   });
 
   it('should receive a pedido', async () => {
@@ -41,15 +42,18 @@ describe('ReceberPedidoUseCase', () => {
       ],
     };
 
-    (pedidosRepository.create as jest.Mock).mockResolvedValue(pedidoRecebido);
+    if (typeof pedidosRepository.create === 'function') {
+      (pedidosRepository.create as jest.Mock).mockResolvedValue(pedidoRecebido);
+      await criarPedidoUseCase.execute(pedidoInput);
+      const result = await receberPedidoUseCase.execute(pedidoInput);
 
-    await criarPedidoUseCase.execute(pedidoInput);
-    const result = await receberPedidoUseCase.execute(pedidoInput);
-
-    expect(pedidosRepository.create).toHaveBeenCalledWith(pedidoInput);
-    expect(result).toEqual({
-      ...pedidoRecebido,
-      status: StatusPedido.RECEBIDO,
-    });
+      expect(pedidosRepository.create).toHaveBeenCalledWith(pedidoInput);
+      expect(result).toEqual({
+        ...pedidoRecebido,
+        status: StatusPedido.RECEBIDO,
+      });
+    } else {
+      throw new Error('Method create not found in pedidosRepository');
+    }
   });
 });
