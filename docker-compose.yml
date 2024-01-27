@@ -1,12 +1,5 @@
   version: '3.8'
   services:    
-    dynamodb-local:
-      image: amazon/dynamodb-local:latest
-      ports:
-        - "8000:8000"
-      networks:
-        - hexafood-bridge
-
     api-producao:
       container_name: 'hexafood-api-producao'
       build:
@@ -15,25 +8,17 @@
         args:
           - NODE_ENV=development
       env_file:
-        - .env
-      environment:
-        AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
-        AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
-        REGION: 'eu-west-1'
-        DYNAMODB_ENDPOINT: 'http://localstack:4566'
-
+        - .env.dev
       ports:
         - 3000:3000
       depends_on:
-        - "dynamodb-local"
-      links:
-        - "dynamodb-local"
-      command: ["./wait-for-it.sh", "dynamodb:4566", "--", "./start.sh"]
+        - localstack
+      command: ["./wait-for-it.sh", "localstack:4566", "--", "./start.sh"]
       volumes:
         - .:/home/node/app
-        - /home/node/app/node_modules  
-
-
+        - /home/node/app/node_modules 
+      networks:
+        - hexafood-bridge 
   
     localstack:
       image: localstack/localstack:latest
@@ -52,13 +37,7 @@
         - HOSTNAME_EXTERNAL=localstack
       volumes:
         - "./docker-compose/localstack:/var/lib/localstack"
-      networks:
-        - hexafood-bridge
-
-    sonarqube:
-      image: sonarqube:latest
-      ports:
-        - "9000:9000"
+        - ./docker-compose/start-localstack.sh:/etc/localstack/init/ready.d/start-localstack.sh
       networks:
         - hexafood-bridge
 
