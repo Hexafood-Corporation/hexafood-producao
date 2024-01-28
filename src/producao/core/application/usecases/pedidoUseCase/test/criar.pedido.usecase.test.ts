@@ -46,4 +46,22 @@ describe('CriarPedidoUseCase', () => {
     expect(pedidosRepository.create).toHaveBeenCalledWith(inputPedido);
     expect(result).toEqual(createdPedido);
   });
+
+  it('should throw an error when create a new pedido', async () => {
+    const inputPedido: InputPedidoDTO = {
+        status: StatusPedido.INICIADO,
+        id: 1000,
+        itens: [
+          {
+            quantidade: 1,
+            valor: 10,
+            id_produto: 1,
+          }
+        ],
+      };
+
+    (pedidosRepository.create as jest.Mock).mockRejectedValue(new Error('Error'));
+
+    await expect(criarPedidoUseCase.execute(inputPedido)).rejects.toThrowError('Error');
+  });
 });
