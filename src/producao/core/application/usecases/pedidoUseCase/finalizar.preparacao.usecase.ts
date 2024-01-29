@@ -3,13 +3,15 @@ import { IPedidosRepository } from "src/producao/core/domain/repository/pedidos.
 import { FindPedidoById } from "./find.pedido.by..id.usecase";
 import { StatusPedido } from "src/producao/core/domain/enum/status-pedido.enum";
 import { Pedido } from "src/producao/core/domain/entity/pedido.entity";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 
 export class FinalizarPreparacaoPedidoUseCase {
     constructor(
       @Inject(IPedidosRepository)
       private pedidosRepository: IPedidosRepository,
-      private findPedidoByIdUseCase: FindPedidoById
+      private findPedidoByIdUseCase: FindPedidoById,
+      private eventEmitter: EventEmitter2,
     ) {}
   
 async execute(id: number): Promise<Pedido> {
@@ -18,7 +20,10 @@ async execute(id: number): Promise<Pedido> {
       throw new Error('Pedido não está em preparação');
     }
     pedido.status = StatusPedido.PRONTO;
-    return await this.pedidosRepository.update(id, pedido);
-    // retorna mensagem de pronto
+  const updatedPedido = await this.pedidosRepository.update(id, pedido);
+
+  this.eventEmitter.emit('pedido.finalizado', updatedPedido);
+
+  return updatedPedido;
   }
 }
