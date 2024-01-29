@@ -14,6 +14,10 @@ import { ListarPedidosUseCase } from './core/application/usecases/pedidoUseCase/
 import { ReceberPedidoUseCase } from './core/application/usecases/pedidoUseCase/receber.pedido.usecase';
 import { PedidoRecebidoConsumer } from './infraestructure/queue/pedido-recebido.consumer';
 import { PedidoRecebidoListener } from './infraestructure/gateway/listeners/pedido-recebido.listener';
+import { IQueueService } from './infraestructure/queue/queue.service';
+import { SqsQueueService } from './infraestructure/gateway/sqs/sqs-queue.service';
+import { PedidoFinalizadoListener } from './infraestructure/gateway/listeners/finaliza-preparacao.listener';
+
 @Module({
   imports: [
     DynamoDBModule
@@ -29,6 +33,7 @@ import { PedidoRecebidoListener } from './infraestructure/gateway/listeners/pedi
       provide: 'EventEmitter',
       useExisting: EventEmitter2,
     },
+    { provide: IQueueService, useClass: SqsQueueService },
     FinalizarPreparacaoPedidoUseCase,
     FindPedidoById,
     IniciarPreparacaoPedidoUseCase,
@@ -36,7 +41,8 @@ import { PedidoRecebidoListener } from './infraestructure/gateway/listeners/pedi
     ListarPedidosUseCase,
     ReceberPedidoUseCase,
     PedidoRecebidoConsumer,
-    PedidoRecebidoListener
+    PedidoRecebidoListener,
+    PedidoFinalizadoListener
   ],
   exports: [FindPedidoById, IPedidosRepository],
 })
