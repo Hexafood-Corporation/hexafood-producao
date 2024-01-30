@@ -20,7 +20,7 @@ jobs:
       run: yarn
 
     - name: Test 
-      run: yarn test --coverage
+      run: yarn jest --config jest.config.js --coverage
 
     - name: Publish Coverage
       uses: actions/upload-artifact@v2
