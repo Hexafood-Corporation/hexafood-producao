@@ -32,6 +32,8 @@ jobs:
       uses: sonarsource/sonarcloud-github-action@master
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_PROJECT_KEY: brpadilha_hexafood-producao
+        SONAR_ORGANIZATION: brpadilha
 
     - name: Build
       run: yarn build
