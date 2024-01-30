@@ -4,6 +4,7 @@ import { IPedidosRepository } from 'src/producao/core/domain/repository/pedidos.
 import { FindPedidoById } from '../find.pedido.by..id.usecase';
 import { Pedido } from 'src/producao/core/domain/entity/pedido.entity';
 import { StatusPedido } from 'src/producao/core/domain/enum/status-pedido.enum';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 
 describe('FinalizarPreparacaoPedidoUseCase', () => {
@@ -13,6 +14,7 @@ describe('FinalizarPreparacaoPedidoUseCase', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [EventEmitterModule.forRoot()],
       providers: [
         FinalizarPreparacaoPedidoUseCase,
         {
