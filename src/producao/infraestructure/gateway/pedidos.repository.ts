@@ -1,50 +1,101 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { DynamoDB } from 'aws-sdk';
 import { Pedido } from 'src/producao/core/domain/entity/pedido.entity';
 import { IPedidosRepository } from 'src/producao/core/domain/repository/pedidos.repository';
+import { InputPedidoDTO, PedidoDTO } from 'src/producao/core/application/usecases/pedidoUseCase/pedido.dto';
+import { StatusPedido } from 'src/producao/core/domain/enum/status-pedido.enum';
 
 @Injectable()
 export class PedidosRepository implements IPedidosRepository {
-  constructor(
-    @InjectModel(Pedido.name) private pedidoModel: Model<Pedido>,
+  private dynamoDb: DynamoDB.DocumentClient;
+  private readonly tableName = 'pedidos';
 
-  ) { }
-
-  async create(pedido: Pedido): Promise<Pedido> {
-    const createdPedido = new this.pedidoModel(pedido);
-    return createdPedido.save();
+  constructor() {
+    this.dynamoDb =  new DynamoDB.DocumentClient({
+      region: process.env.AWS_DEFAULT_REGION,
+      endpoint: process.env.AWS_DYNAMODB_ENDPOINT,
+    });
   }
 
-  async findAll(): Promise<Pedido[]> {
-    return this.pedidoModel.find().exec();
+  async create(data: InputPedidoDTO): Promise<Pedido> {
+    const params = {
+      TableName: this.tableName,
+      Item: data
+    };
+
+    await this.dynamoDb.put(params).promise();
+
+    return data as Pedido;
   }
 
-  async update(id: number, pedido: Pedido): Promise<Pedido> {
-    return this.pedidoModel.findOneAndUpdate({ id: id }, pedido).exec();
+  async findAll(status?: StatusPedido): Promise<Pedido[]> {
+    const params = {
+      TableName: this.tableName,
+    };
+
+    const result = await this.dynamoDb.scan(params).promise();
+
+    return result.Items as Pedido[];
   }
 
-  async findByStatus(status: string): Promise<Pedido[]> {
-    return this.pedidoModel.find({
-      status: status
-    }).exec();
+  async update(id: number, pedido: Pedido) {
+    const params = {
+      TableName: this.tableName,
+      Key: { id },
+      UpdateExpression: 'set #status = :status',
+      ExpressionAttributeNames: {
+        '#status': 'status'
+      },
+      ExpressionAttributeValues: {
+        ':status': pedido.status
+      },
+      ReturnValues: 'UPDATED_NEW'
+    };
+
+    await this.dynamoDb.update(params).promise();
   }
 
-  async findByExternalPedidoId(id: number): Promise<Pedido> {
-    return this.pedidoModel.findOne({
-      external_pedido_id: id
-    }).exec();
+  async findByStatus(status: StatusPedido) {
+    const params = {
+      TableName: this.tableName,
+      FilterExpression: '#status = :status',
+      ExpressionAttributeNames: {
+        '#status': 'status'
+      },
+      ExpressionAttributeValues: {
+        ':status': status
+      }
+    };
+
+    const result = await this.dynamoDb.scan(params).promise();
+
+    return result.Items as Pedido[];
   }
 
   async findById(id: number): Promise<Pedido> {
-    return this.pedidoModel.findOne({
-      id: id
-    }).exec();
+    const params = {
+      TableName: this.tableName,
+      Key: { id }
+    };
+
+    const result = await this.dynamoDb.get(params).promise();
+
+    return result.Item as Pedido;
   }
 
-  async findByCodigo(codigo_pedido: string): Promise<Pedido> {
-    return this.pedidoModel.findOne({
-      codigo_pedido: codigo_pedido
-    }).exec();
+  async findByCodigo(codigo_pedido: string): Promise<PedidoDTO> {
+    const params = {
+      TableName: this.tableName,
+      FilterExpression: '#codigo_pedido = :codigo_pedido',
+      ExpressionAttributeNames: {
+        '#codigo_pedido': 'codigo_pedido'
+      },
+      ExpressionAttributeValues: {
+        ':codigo_pedido': codigo_pedido
+      }
+    };
+
+    const result = await this.dynamoDb.scan(params).promise();
+    return result.Items[0] as PedidoDTO;
   }
 }

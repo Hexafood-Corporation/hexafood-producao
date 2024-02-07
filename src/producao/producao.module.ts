@@ -9,31 +9,18 @@ import { FinalizarPreparacaoPedidoUseCase } from './core/application/usecases/pe
 import { FindPedidoById } from './core/application/usecases/pedidoUseCase/find.pedido.by..id.usecase';
 import { IniciarPreparacaoPedidoUseCase } from './core/application/usecases/pedidoUseCase/iniciar.preparacao.usecase';
 import { CriarPedidoUseCase } from './core/application/usecases/pedidoUseCase/criar.pedido.usecase';
-import { MongooseModule } from '@nestjs/mongoose';
-import { PedidoSchema } from './core/schemas/pedido.schema';
-import { ItemSchema } from './core/schemas/item.schema';
-import { ProdutoSchema } from './core/schemas/produto.schema';
-import { CategoriaSchema } from './core/schemas/categoria.schema';
+import { DynamoDBModule } from './infraestructure/database/dynamodb.module';
+import { ListarPedidosUseCase } from './core/application/usecases/pedidoUseCase/listar.pedidos.usecase';
+import { ReceberPedidoUseCase } from './core/application/usecases/pedidoUseCase/receber.pedido.usecase';
+import { PedidoRecebidoConsumer } from './infraestructure/queue/pedido-recebido.consumer';
+import { PedidoRecebidoListener } from './infraestructure/gateway/listeners/pedido-recebido.listener';
+import { IQueueService } from './infraestructure/queue/queue.service';
+import { SqsQueueService } from './infraestructure/gateway/sqs/sqs-queue.service';
+import { PedidoFinalizadoListener } from './infraestructure/gateway/listeners/finaliza-preparacao.listener';
+
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      {
-        name: 'Pedido',
-        schema: PedidoSchema,
-      },
-      {
-        name: 'Item',
-        schema: ItemSchema,
-      },
-      {
-        name: 'Produto',
-        schema: ProdutoSchema,
-      },
-      {
-        name: 'Categoria',
-        schema: CategoriaSchema,
-      }
-    ])
+    DynamoDBModule
   ],
   controllers: [ ProducaoController],
   providers: [
@@ -46,10 +33,16 @@ import { CategoriaSchema } from './core/schemas/categoria.schema';
       provide: 'EventEmitter',
       useExisting: EventEmitter2,
     },
+    { provide: IQueueService, useClass: SqsQueueService },
     FinalizarPreparacaoPedidoUseCase,
     FindPedidoById,
     IniciarPreparacaoPedidoUseCase,
     CriarPedidoUseCase,
+    ListarPedidosUseCase,
+    ReceberPedidoUseCase,
+    PedidoRecebidoConsumer,
+    PedidoRecebidoListener,
+    PedidoFinalizadoListener
   ],
   exports: [FindPedidoById, IPedidosRepository],
 })

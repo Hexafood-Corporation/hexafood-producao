@@ -1,6 +1,6 @@
 import { Inject } from "@nestjs/common";
-import { Pedido } from "../../../domain/entity/pedido.entity";
-import { IPedidosRepository } from "../../../domain/repository/pedidos.repository";
+import { Pedido } from "src/producao/core/domain/entity/pedido.entity";
+import { IPedidosRepository } from "src/producao/core/domain/repository/pedidos.repository";
 
 export class FindPedidoById {
   constructor(

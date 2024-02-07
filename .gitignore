@@ -38,3 +38,5 @@ lerna-debug.log*
 .env
 .env.dev
 .docker
+docker-compose/localstack
+docker-compose/localstack/*

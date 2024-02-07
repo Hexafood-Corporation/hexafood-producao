@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { IniciarPreparacaoPedidoUseCase } from '../iniciar.preparacao.usecase';
 import { FindPedidoById } from '../find.pedido.by..id.usecase';
-import { IPedidosRepository } from '../../../../domain/repository/pedidos.repository';
-import { StatusPedido } from '../../../../domain/enum/status-pedido.enum';
-import { Pedido } from '../../../../domain/entity/pedido.entity';
+import { IPedidosRepository } from 'src/producao/core/domain/repository/pedidos.repository';
+import { Pedido } from 'src/producao/core/domain/entity/pedido.entity';
+import { StatusPedido } from 'src/producao/core/domain/enum/status-pedido.enum';
+
 
 describe('IniciarPreparacaoPedidoUseCase', () => {
   let iniciarPreparacaoPedidoUseCase: IniciarPreparacaoPedidoUseCase;

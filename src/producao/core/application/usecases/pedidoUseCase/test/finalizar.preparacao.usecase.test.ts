@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FinalizarPreparacaoPedidoUseCase } from '../finalizar.preparacao.usecase';
-import { IPedidosRepository } from '../../../../../core/domain/repository/pedidos.repository';
+import { IPedidosRepository } from 'src/producao/core/domain/repository/pedidos.repository';
 import { FindPedidoById } from '../find.pedido.by..id.usecase';
-import { Pedido } from '../../../../../core/domain/entity/pedido.entity';
-import { StatusPedido } from '../../../../../core/domain/enum/status-pedido.enum';
+import { Pedido } from 'src/producao/core/domain/entity/pedido.entity';
+import { StatusPedido } from 'src/producao/core/domain/enum/status-pedido.enum';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+
 
 describe('FinalizarPreparacaoPedidoUseCase', () => {
   let useCase: FinalizarPreparacaoPedidoUseCase;
@@ -12,6 +14,7 @@ describe('FinalizarPreparacaoPedidoUseCase', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [EventEmitterModule.forRoot()],
       providers: [
         FinalizarPreparacaoPedidoUseCase,
         {
@@ -63,5 +66,21 @@ describe('FinalizarPreparacaoPedidoUseCase', () => {
       expect(findPedidoByIdUseCase.findById).toHaveBeenCalledWith(id);
       expect(pedidosRepository.update).toHaveBeenCalledWith(id, updatedPedido);
     });
+  });
+
+  it('should return an error if the pedido is not in preparation', async () => {
+    const id = 1;
+    const pedido: Partial<Pedido> = {
+      id: id,
+      status: StatusPedido.PRONTO,
+    };
+
+    jest
+      .spyOn(findPedidoByIdUseCase, 'findById')
+      .mockResolvedValue(pedido as Pedido);
+
+    await expect(useCase.execute(id)).rejects.toThrowError(
+      'Pedido não está em preparação',
+    );
   });
 });

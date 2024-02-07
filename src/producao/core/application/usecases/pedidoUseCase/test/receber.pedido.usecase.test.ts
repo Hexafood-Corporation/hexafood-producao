@@ -1,8 +1,8 @@
 import { ReceberPedidoUseCase } from '../receber.pedido.usecase';
 import { CriarPedidoUseCase } from '../criar.pedido.usecase';
-import { IPedidosRepository } from '../../../../../core/domain/repository/pedidos.repository';
 import { InputPedidoDTO } from '../pedido.dto';
-import { StatusPedido } from '../../../../../core/domain/enum/status-pedido.enum';
+import { IPedidosRepository } from 'src/producao/core/domain/repository/pedidos.repository';
+import { StatusPedido } from 'src/producao/core/domain/enum/status-pedido.enum';
 
 describe('ReceberPedidoUseCase', () => {
   let receberPedidoUseCase: ReceberPedidoUseCase;
@@ -13,8 +13,8 @@ describe('ReceberPedidoUseCase', () => {
     pedidosRepository = {
       create: jest.fn(),
     };
+    receberPedidoUseCase = new ReceberPedidoUseCase(pedidosRepository as IPedidosRepository);
     criarPedidoUseCase = new CriarPedidoUseCase(pedidosRepository as IPedidosRepository);
-    receberPedidoUseCase = new ReceberPedidoUseCase(criarPedidoUseCase);
   });
 
   it('should receive a pedido', async () => {
@@ -42,15 +42,18 @@ describe('ReceberPedidoUseCase', () => {
       ],
     };
 
-    (pedidosRepository.create as jest.Mock).mockResolvedValue(pedidoRecebido);
+    if (typeof pedidosRepository.create === 'function') {
+      (pedidosRepository.create as jest.Mock).mockResolvedValue(pedidoRecebido);
+      await criarPedidoUseCase.execute(pedidoInput);
+      const result = await receberPedidoUseCase.execute(pedidoInput);
 
-    await criarPedidoUseCase.execute(pedidoInput);
-    const result = await receberPedidoUseCase.execute(pedidoInput);
-
-    expect(pedidosRepository.create).toHaveBeenCalledWith(pedidoInput);
-    expect(result).toEqual({
-      ...pedidoRecebido,
-      status: StatusPedido.RECEBIDO,
-    });
+      expect(pedidosRepository.create).toHaveBeenCalledWith(pedidoInput);
+      expect(result).toEqual({
+        ...pedidoRecebido,
+        status: StatusPedido.RECEBIDO,
+      });
+    } else {
+      throw new Error('Method create not found in pedidosRepository');
+    }
   });
 });

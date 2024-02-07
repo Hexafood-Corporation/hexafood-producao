@@ -1,7 +1,7 @@
+import { IPedidosRepository } from 'src/producao/core/domain/repository/pedidos.repository';
 import { CriarPedidoUseCase } from '../criar.pedido.usecase';
-import { IPedidosRepository } from '../../../../../core/domain/repository/pedidos.repository';
 import { InputPedidoDTO } from '../pedido.dto';
-import { StatusPedido } from '../../../../../core/domain/enum/status-pedido.enum';
+import { StatusPedido } from 'src/producao/core/domain/enum/status-pedido.enum';
 
 describe('CriarPedidoUseCase', () => {
   let criarPedidoUseCase: CriarPedidoUseCase;
@@ -45,5 +45,23 @@ describe('CriarPedidoUseCase', () => {
 
     expect(pedidosRepository.create).toHaveBeenCalledWith(inputPedido);
     expect(result).toEqual(createdPedido);
+  });
+
+  it('should throw an error when create a new pedido', async () => {
+    const inputPedido: InputPedidoDTO = {
+        status: StatusPedido.INICIADO,
+        id: 1000,
+        itens: [
+          {
+            quantidade: 1,
+            valor: 10,
+            id_produto: 1,
+          }
+        ],
+      };
+
+    (pedidosRepository.create as jest.Mock).mockRejectedValue(new Error('Error'));
+
+    await expect(criarPedidoUseCase.execute(inputPedido)).rejects.toThrowError('Error');
   });
 });
